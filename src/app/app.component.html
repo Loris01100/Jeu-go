@@ -1,16 +1,16 @@
 <h1>Jeu de go</h1>
 <div>
-    <table class="board">
+    <table class="boardx9">
         <tbody>
-            <tr *ngFor="let row of plateau9Columns" >
-                <td *ngFor="let row of plateau8Columns"></td>
+            <tr class="plateau9Columns" *ngFor="let row of plateau9Columns" >
+                <td class="plateau9Rows" *ngFor="let row of plateau9Rows"></td>
             </tr>
         </tbody>
     </table>
     <table class="boardx8">
         <tbody>
-            <tr *ngFor="let row of plateau9Rows" >
-                <td *ngFor="let row of plateau8Rows"></td>
+            <tr class="plateau8Columns" *ngFor="let row of plateau8Columns" >
+                <td class="plateau8Rows" *ngFor="let row of plateau8Rows"></td>
             </tr>
         </tbody>
     </table>

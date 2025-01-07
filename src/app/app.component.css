@@ -1,3 +1,15 @@
-.td {
-    background-color: black;
+.plateau9Rows {
+    background-color: aqua;
+}
+
+.plateau8Rows {
+    background-color:black;
+}
+
+.plateau9Columns {
+    background-color: blueviolet;
+}
+
+.plateau8Columns {
+    background-color: brown;
 }
