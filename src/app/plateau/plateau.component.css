@@ -2,6 +2,6 @@
 display: grid;
 grid-template-columns: repeat(9, 1fr);
 grid-template-rows: repeat(9, 1fr);
-grid-column-gap: 0px;
-grid-row-gap: 0px;
+grid-column-gap: 5px;
+grid-row-gap: 5px;
 }

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-celulle',
@@ -8,4 +9,11 @@ import { Component } from '@angular/core';
 })
 export class CelulleComponent {
 
+  //déclaration des variables
+
+
+  
+
+  //mise en place des joueurs 
+  
 }

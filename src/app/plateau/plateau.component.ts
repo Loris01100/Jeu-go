@@ -8,9 +8,8 @@ import { RouterLink, RouterModule } from '@angular/router';
   styleUrl: './plateau.component.css',
 })
 export class PlateauComponent {
-  plateau9x9Rows: number[] = Array.from({ length: 9 });
-  plateau9x9Columns: number[] = Array.from({ length: 9 });
-  plateau8x8Rows: number[] = Array.from({ length: 8 });
-  plateau8x8Columns: number[] = Array.from({ length: 8 });
-
+  plateau8x8Rows = Array(8).fill(null);
+  plateau8x8Columns = Array(8).fill(null);
+  plateau9x9Rows = Array(9).fill(null);
+  plateau9x9Columns = Array(9).fill(null);
 }

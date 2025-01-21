@@ -1,17 +1,39 @@
+<!DOCTYPE html>
+
 <h1>Jeu de go</h1>
+
 <div>
-    <table class="boardx9">
-        <tbody>
-            <tr class="plateau9Columns" *ngFor="let row of plateau9Columns" >
-                <td class="plateau9Rows" *ngFor="let row of plateau9Rows"></td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="boardx8">
-        <tbody>
-            <tr class="plateau8Columns" *ngFor="let row of plateau8Columns" >
-                <td class="plateau8Rows" *ngFor="let row of plateau8Rows"></td>
-            </tr>
-        </tbody>
-    </table>
+  <!--<button class = "finTour"> Fin du tour</button>
+    <button class = "passerTour"> Passer</button>-->
+</div>
+<div class="scoreboard">
+  <p>Joueur 1 : (Blanc)</p> {{scoreJoueur1}}
+  <p>Joueur 2 : (Noir)</p> {{scoreJoueur2}}
+</div>
+<div class="container">
+  <table class="boardx8">
+    <tbody>
+      <tr
+        class="columns"
+        *ngFor="let row of plateau8Rows; let rowIndex = index"
+      >
+        <td
+          class="rows"
+          *ngFor="let col of plateau8Columns; let rowIndex = index"
+        ></td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="boardx9">
+    <tbody>
+      <tr *ngFor="let row of plateau9Rows; let rowIndex = index">
+        <td
+          *ngFor="let col of plateau9Columns; let colIndex = index"
+          [class]="recupClass(rowIndex, colIndex)"
+          (click)="placerJeton(rowIndex, colIndex)"
+          (contextmenu)="retirerJeton($event, rowIndex, colIndex)"
+        ></td>
+      </tr>
+    </tbody>
+  </table>
 </div>

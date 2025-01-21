@@ -1,15 +1,37 @@
-.plateau9Rows {
-    background-color: aqua;
+.boardx8 {
+  background-color: black;
+  position: absolute;
+  left: 110px;
+  height: 430px;
+  width: 430px;
+  z-index: 0px;
+  margin: 20px;
 }
 
-.plateau8Rows {
-    background-color:black;
+.boardx9 {
+  background-color: transparent;
+  position: relative;
+  left: 100px;
+  height: 475px;
+  width: 475px;
+  z-index: 1px;
 }
 
-.plateau9Columns {
-    background-color: blueviolet;
+.rows {
+  background-color: fuchsia;
+  cursor: pointer;
 }
 
-.plateau8Columns {
-    background-color: brown;
+.columns {
+  cursor: pointer;
+}
+
+.jetonBlanc {
+  background-color: white;
+  border-radius: 50%;
+}
+
+.jetonNoir {
+  background-color: black;
+  border-radius: 50%;
 }
