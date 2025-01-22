@@ -26,7 +26,7 @@ export class AppComponent {
     .fill(null)
     .map(() => Array(9).fill(''));
 
-  //mise en place des joueurs
+  //mise en place des joueurs et des scores
   joueurActuel = 1;
   scoreJoueur1 = 0;
   scoreJoueur2 = 0;
