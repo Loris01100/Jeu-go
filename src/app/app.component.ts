@@ -1,7 +1,7 @@
-import { Component} from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { PlateauComponent } from './plateau/plateau.component';
 import { NgFor } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
+import { ScoreComponent } from './score/score.component';
 
 
 @Component({
@@ -10,38 +10,45 @@ import { BehaviorSubject } from 'rxjs';
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
   title = 'jeu-go';
 
-  //mise en place du plateau
-  plateau = new PlateauComponent();
+//mise en place du plateau
+plateau = new PlateauComponent();
 
-  plateau8Rows = this.plateau.plateau8x8Rows;
-  plateau8Columns = this.plateau.plateau8x8Columns;
+plateau8Rows = this.plateau.plateau8x8Rows;
+plateau8Columns = this.plateau.plateau8x8Columns;
 
-  plateau9Rows = this.plateau.plateau9x9Rows;
-  plateau9Columns = this.plateau.plateau9x9Columns;
+plateau9Rows = this.plateau.plateau9x9Rows;
+plateau9Columns = this.plateau.plateau9x9Columns;
 
-  etatPlateau = Array(9)
-    .fill(null)
-    .map(() => Array(9).fill(''));
-
-  //mise en place des joueurs et des scores
-  joueurActuel = 1;
-  scoreJoueur1 = 0;
-  scoreJoueur2 = 0;
+etatPlateau = Array(9)
+  .fill(null)
+  .map(() => Array(9).fill(''));
 
 
-  //méthode pour récupérer les classes 
-  //si etatPlateau === blanc alors jetonBlanc utilisé
-  //si etatPlateau === noir alors jetonNoir utilisé
-  recupClass(rowIndex: number, colIndex: number): string {
-    if (this.etatPlateau[rowIndex][colIndex] === 'blanc') {
-      return 'jetonBlanc'; //si etatPlateau = blanc alors jetonBlanc
-    } else if (this.etatPlateau[rowIndex][colIndex] === 'noir') {
-      return 'jetonNoir';
-    }
-    return '';
+  //scores par défaut au début de la partie
+  scoreJoueur1: number = 0
+  scoreJoueur2: number = 0
+
+  //premier joueur à jouer = toujours le blanc, blanc = 1
+  joueurActuel: number = 1;
+
+  constructor(private score: ScoreComponent) {}
+
+  //les subscribes pour les scores
+  ngOnInit(): void {
+    this.score.scoreJoueur1$.subscribe((scores) => {
+      this.scoreJoueur1 = scores;
+    });
+    this.score.scoreJoueur2$.subscribe((scores) => {
+      this.scoreJoueur2 = scores;
+    });
+
+      //les subscribes pour le changement de joueur
+  this.score.joueurActuel$.subscribe((joueur) => {
+    this.joueurActuel = joueur;
+  })
   }
 
   //méthode utiliser pour placer des jetons
@@ -60,9 +67,20 @@ export class AppComponent {
       //si etatPlateau = noir alors jetonNoir
       this.etatPlateau[rowIndex][colIndex] = 'noir';
     }
-    this.joueurActuel = this.joueurActuel === 1 ? 2 : 1;
+    this.score.changementJoueur();
   }
 
+   //méthode pour récupérer les classes 
+  //si etatPlateau === blanc alors jetonBlanc utilisé
+  //si etatPlateau === noir alors jetonNoir utilisé
+  recupClass(rowIndex: number, colIndex: number): string {
+    if (this.etatPlateau[rowIndex][colIndex] === 'blanc') {
+      return 'jetonBlanc'; //si etatPlateau = blanc alors jetonBlanc
+    } else if (this.etatPlateau[rowIndex][colIndex] === 'noir') {
+      return 'jetonNoir';
+    }
+    return '';
+  }
 
   //permet de retirer le jeton avec le bouton droit, utilisation de l'event.preventDefaut pour ne pas interférer avec l'utilisation du clic droit dans des pages web classiques
   //si le jeton enlevé est blanc, +1 point pour les noirs et inversement
@@ -77,10 +95,11 @@ export class AppComponent {
 
     this.etatPlateau[rowIndex][colIndex] = '';
 
-    if (jeton === 'blanc') {
-      this.scoreJoueur2 += 1;
-    } else if (jeton === 'noir') {
-      this.scoreJoueur1 += 1;
+    if (this.joueurActuel === 1) {
+      this.score.ajoutPointJoueur1();
+    } else {
+      this.score.ajoutPointJoueur2();
     }
   }
+
 }
