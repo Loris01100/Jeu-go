@@ -35,3 +35,60 @@
   background-color: black;
   border-radius: 50%;
 }
+
+button {
+  background-color: fuchsia;
+  color: white;
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  margin: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+div {
+  text-align: center;
+  margin: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: yellowgreen;
+}
+
+.scoreboard {
+  text-align: center;
+  margin: 20px;
+  font-family: 'Arial', sans-serif;
+  color: #333;
+}
+
+.scoreboard p {
+  font-size: 18px;
+  margin: 5px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  text-align: center;
+}
+
+li {
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.table-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}

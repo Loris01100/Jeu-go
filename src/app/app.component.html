@@ -1,27 +1,25 @@
-<!DOCTYPE html>
-
-<h1>Jeu de go</h1>
+<h1>Jeu de Go</h1>
 
 <div>
-  <!--<button class = "finTour"> Fin du tour</button>
-    <button class = "passerTour"> Passer</button>-->
+  <button (click)="passerTour()">Passer son tour</button>
 </div>
+
+<div>
+  <button (click)="sauvegarderPartie('partie1')">Sauvegarder la partie</button>
+  <button (click)="chargerPartie('partie1')">Charger une partie</button>
+</div>
+
 <div class="scoreboard">
   <p>Joueur 1 : (Blanc)</p> {{scoreJoueur1}}
   <p>Joueur 2 : (Noir)</p> {{scoreJoueur2}}
-  <p>Joueur actuel : Joueur {{ joueurActuel }}</p>
+  <p>Joueur actuel : {{ joueurActuel === 1 ? 'Blanc' : 'Noir' }}</p>
 </div>
+
 <div class="container">
   <table class="boardx8">
     <tbody>
-      <tr
-        class="columns"
-        *ngFor="let row of plateau8Rows; let rowIndex = index"
-      >
-        <td
-          class="rows"
-          *ngFor="let col of plateau8Columns; let rowIndex = index"
-        ></td>
+      <tr class="columns" *ngFor="let row of plateau8Rows; let rowIndex = index">
+        <td class="rows" *ngFor="let col of plateau8Columns; let colIndex = index"></td>
       </tr>
     </tbody>
   </table>

@@ -2,6 +2,7 @@ import { Component, OnInit} from '@angular/core';
 import { PlateauComponent } from './plateau/plateau.component';
 import { NgFor } from '@angular/common';
 import { ScoreComponent } from './score/score.component';
+import { blob } from 'node:stream/consumers';
 
 
 @Component({
@@ -33,6 +34,7 @@ etatPlateau = Array(9)
 
   //premier joueur à jouer = toujours le blanc, blanc = 1
   joueurActuel: number = 1;
+  passes = [false,false];
 
   constructor(private score: ScoreComponent) {}
 
@@ -45,7 +47,7 @@ etatPlateau = Array(9)
       this.scoreJoueur2 = scores;
     });
 
-      //les subscribes pour le changement de joueur
+  //les subscribes pour le changement de joueur
   this.score.joueurActuel$.subscribe((joueur) => {
     this.joueurActuel = joueur;
   })
@@ -61,13 +63,12 @@ etatPlateau = Array(9)
       return;
     }
 
-    if (this.joueurActuel === 1) {
-      this.etatPlateau[rowIndex][colIndex] = 'blanc';
-    } else {
-      //si etatPlateau = noir alors jetonNoir
-      this.etatPlateau[rowIndex][colIndex] = 'noir';
-    }
-    this.score.changementJoueur();
+    this.etatPlateau[rowIndex][colIndex] = this.joueurActuel === 1 ? 'blanc' : 'noir';
+
+    this.passes = [false,false];
+
+    this.joueurActuel = this.joueurActuel === 1 ? 2 : 1;
+
   }
 
    //méthode pour récupérer les classes 
@@ -82,7 +83,7 @@ etatPlateau = Array(9)
     return '';
   }
 
-  //permet de retirer le jeton avec le bouton droit, utilisation de l'event.preventDefaut pour ne pas interférer avec l'utilisation du clic droit dans des pages web classiques
+ //permet de retirer le jeton avec le bouton droit, utilisation de l'event.preventDefaut pour ne pas interférer avec l'utilisation du clic droit dans des pages web classiques
   //si le jeton enlevé est blanc, +1 point pour les noirs et inversement
   //remet à zéro étatPlateau lors du clic droit
   retirerJeton(event: MouseEvent, rowIndex: number, colIndex: number): void {
@@ -95,11 +96,98 @@ etatPlateau = Array(9)
 
     this.etatPlateau[rowIndex][colIndex] = '';
 
-    if (this.joueurActuel === 1) {
-      this.score.ajoutPointJoueur1();
-    } else {
-      this.score.ajoutPointJoueur2();
+    if (jeton === 'blanc') {
+      this.scoreJoueur2 += 1;
+    } else if (jeton === 'noir') {
+      this.scoreJoueur1 += 1;
     }
+  }
+
+  //méthode qui permet de passer le tour du joueur
+  //si un joueur passe son tour c'est à l'autre joueur de jouer
+  //si les deux joueurs passent leur tour, la partie est terminé
+  passerTour() : void {
+    this.passes[this.joueurActuel - 1] = true;
+
+    if(this.passes[0] && this.passes[1]) {
+      alert('les deux joueurs ont passés leur tour. Partie terminé');
+      this.terminerPartie();
+      return;
+    }
+
+    this.joueurActuel = this.joueurActuel === 1 ? 2 : 1
+
+    this.passes[this.joueurActuel - 1] = false;
+
+  }
+
+  //méthodes qui est utilisé uniquement si deux joueurs passent leur tour. 
+  //elle permet de reinitialisé le plateau, le score des deux joueurs.
+  //affiche dans un message d'alerte le score des deux joueurs.
+  terminerPartie() : void {
+    //console.log("partie terminé") test
+    alert(`Score final - Joueur 1: ${this.scoreJoueur1}, Joueur 2: ${this.scoreJoueur2}`);
+
+    this.joueurActuel = 1
+    this.passes = [false,false];
+
+    this.etatPlateau = Array(9)
+    .fill(null)
+    .map(() => Array(9).fill(''));
+
+    // Réinitialiser les scores
+    this.scoreJoueur1 = 0;
+    this.scoreJoueur2 = 0;
+  }
+
+  //méthode pour la sauvegarde de la partie en localStorage
+  //ne pas prendre en compte l'élément dateSauvegarde, ajouté pour tester de mettre les sauvegardes dans une autre page
+  //méthode qui récupère tous les éléments d'une partie : etatPlateau, scoreJoueur1 et scoreJoueur2, joueurActuel, passes 
+  sauvegarderPartie(nomPartie : string) : void {
+    const partie = {
+      etatPlateau: this.etatPlateau,
+      scoreJoueur1: this.scoreJoueur1,
+      scoreJoueur2: this.scoreJoueur2,
+      joueurActuel: this.joueurActuel,
+      passes: this.passes,
+      dateSauvegarde: new Date().toISOString,
+    };
+
+    localStorage.setItem(`jeuGo-${nomPartie}`, JSON.stringify(partie));
+    alert('partie sauvegardée');
+  }
+
+  //méthode qui récupère le localStorage de la page
+  //permet de charger tous les éléments qui ont été sauvegardés par la méthode
+  //méthode qui charge tous les éléments d'une partie sauvegarder : etatPlateau, scoreJoueur1 et scoreJoueur2, joueurActuel, passes 
+  chargerPartie(nomPartie: string): void {
+    const sauvegarde = localStorage.getItem(`jeuGo-${nomPartie}`); // Utiliser des backticks ici
+    if (sauvegarde) {
+      const partie = JSON.parse(sauvegarde);
+      this.etatPlateau = partie.etatPlateau;
+      this.scoreJoueur1 = partie.scoreJoueur1;
+      this.scoreJoueur2 = partie.scoreJoueur2;
+      this.joueurActuel = partie.joueurActuel;
+      this.passes = partie.passes;
+  
+      alert('Partie chargée');
+    } else {
+      alert('La partie est introuvable');
+    }
+  }
+
+  //méthode qui devait être utilisé pour lister les parties dans une autres page
+  //non utilsé
+  listePartie(): {nom: string, dateSauvegarde: string}[] {
+    const sauvegardes = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('jeuGo-')) {
+      const partie = JSON.parse(localStorage.getItem(key)!);
+      sauvegardes.push({ nom: key.replace('jeuGo-', ''), dateSauvegarde: partie.dateSauvegarde });
+    }
+  }
+  return sauvegardes;
   }
 
 }
